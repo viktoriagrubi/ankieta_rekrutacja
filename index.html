@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ankieta Rekrutacyjna</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background:
+          radial-gradient(circle at top left, #1e3a8a 0%, transparent 30%),
+          radial-gradient(circle at bottom right, #0f172a 0%, transparent 35%),
+          linear-gradient(135deg, #020617, #0f172a, #111827);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 1000px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 34px;
+        padding: 55px;
+        box-shadow:
+          0 20px 80px rgba(0, 0, 0, 0.45),
+          inset 0 1px 1px rgba(255, 255, 255, 0.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(59, 130, 246, 0.18);
+        filter: blur(100px);
+        top: -100px;
+        right: -100px;
+        border-radius: 50%;
+      }
+
+      .logo {
+        font-size: 13px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: #93c5fd;
+        margin-bottom: 14px;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 48px;
+        font-weight: 800;
+        margin-bottom: 14px;
+        line-height: 1.1;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #cbd5e1;
+        margin-bottom: 45px;
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h2 {
+        font-size: 22px;
+        margin-bottom: 18px;
+        font-weight: 700;
+      }
+
+      .required {
+        color: #38bdf8;
+      }
+
+      .helper {
+        font-size: 14px;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+      }
+
+      .option {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 18px;
+        border-radius: 18px;
+        transition: 0.3s;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 15px;
+      }
+
+      .option:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      }
+
+      input[type="checkbox"],
+      input[type="radio"] {
+        transform: scale(1.2);
+        accent-color: #38bdf8;
+      }
+
+      textarea,
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="number"] {
+        width: 100%;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.06);
+        color: white;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      textarea:focus,
+      input:focus {
+        border-color: #38bdf8;
+        background: rgba(255, 255, 255, 0.09);
+        box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
+      .table {
+        overflow: auto;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: linear-gradient(135deg, #2563eb, #0ea5e9);
+        padding: 20px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      td {
+        padding: 18px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      td:first-child {
+        text-align: left;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 22px;
+        border: none;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #0ea5e9, #2563eb);
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        cursor: pointer;
+        transition: 0.35s;
+        margin-top: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.35);
+      }
+
+      .status {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .success {
+        color: #4ade80;
+      }
+
+      .error {
+        color: #f87171;
+      }
+
+      .footer {
+        margin-top: 25px;
+        text-align: center;
+        font-size: 13px;
+        color: #94a3b8;
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 28px;
+        }
+
+        h1 {
+          font-size: 34px;
+        }
+
+        .section h2 {
+          font-size: 19px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">KARIERA</div>
+
+      <h1>Ankieta Potencjału</h1>
+
+      <p class="subtitle">
+        Poznajmy Twój potencjał zawodowy oraz oczekiwania współpracy.
+      </p>
+
+      <form id="recruitmentForm">
+        <div class="section">
+          <h2>1. Co jest dla Ciebie ważne? <span class="required">*</span></h2>
+          <div class="helper">Możesz zaznaczyć maksymalnie 3 odpowiedzi.</div>
+
+          <div class="grid">
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Bezpieczeństwo współpracy"
+              />Bezpieczeństwo współpracy</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Kariera"
+              />Kariera</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Konkursy bonusy premie"
+              />Konkursy bonusy premie</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Kształcenie"
+              />Kształcenie</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Możliwość budowy własnej firmy"
+              />Możliwość budowy własnej firmy</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Elastyczny czas pracy"
+              />Elastyczny czas pracy</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Nowe wyzwania"
+              />Nowe wyzwania</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Praca w zespole"
+              />Praca w zespole</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Wynagrodzenie"
+              />Wynagrodzenie</label
+            >
+            <label class="option"
+              ><input
+                type="checkbox"
+                name="important"
+                value="Wizerunek"
+              />Wizerunek</label
+            >
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>
+            2. Jak powinna wyglądać Twoja idealna praca?
+            <span class="required">*</span>
+          </h2>
+          <textarea
+            id="idealWork"
+            required
+            placeholder="Opisz swoją wymarzoną pracę..."
+          ></textarea>
+        </div>
+
+        <div class="section">
+          <h2>
+            3. Jak wyobrażasz sobie wysokość swoich dochodów?
+            <span class="required">*</span>
+          </h2>
+          <input
+            type="number"
+            id="income"
+            required
+            placeholder="Wpisz kwotę w zł"
+          />
+        </div>
+
+        <div class="section">
+          <h2>
+            4. Czy współpracowałeś/aś z innymi instytucjami finansowymi?
+            <span class="required">*</span>
+          </h2>
+
+          <div class="grid">
+            <label class="option"
+              ><input
+                type="radio"
+                name="finance"
+                value="Tak"
+                required
+              />Tak</label
+            >
+            <label class="option"
+              ><input type="radio" name="finance" value="Nie" />Nie</label
+            >
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>5. Twoje atuty <span class="required">*</span></h2>
+
+          <div class="table">
+            <table>
+              <tr>
+                <th>Atut</th>
+                <th>Ważne</th>
+                <th>Bardzo ważne</th>
+              </tr>
+
+              <tr>
+                <td>Gotowość do pracy w zespole</td>
+                <td>
+                  <input type="radio" name="team" value="Ważne" required />
+                </td>
+                <td><input type="radio" name="team" value="Bardzo ważne" /></td>
+              </tr>
+
+              <tr>
+                <td>Pilność, pracowitość</td>
+                <td>
+                  <input type="radio" name="work" value="Ważne" required />
+                </td>
+                <td><input type="radio" name="work" value="Bardzo ważne" /></td>
+              </tr>
+
+              <tr>
+                <td>Entuzjazm</td>
+                <td>
+                  <input
+                    type="radio"
+                    name="enthusiasm"
+                    value="Ważne"
+                    required
+                  />
+                </td>
+                <td>
+                  <input type="radio" name="enthusiasm" value="Bardzo ważne" />
+                </td>
+              </tr>
+
+              <tr>
+                <td>Wiara we własne siły</td>
+                <td>
+                  <input
+                    type="radio"
+                    name="confidence"
+                    value="Ważne"
+                    required
+                  />
+                </td>
+                <td>
+                  <input type="radio" name="confidence" value="Bardzo ważne" />
+                </td>
+              </tr>
+
+              <tr>
+                <td>Pozytywne myślenie</td>
+                <td>
+                  <input type="radio" name="positive" value="Ważne" required />
+                </td>
+                <td>
+                  <input type="radio" name="positive" value="Bardzo ważne" />
+                </td>
+              </tr>
+
+              <tr>
+                <td>Wiarygodność</td>
+                <td>
+                  <input type="radio" name="trust" value="Ważne" required />
+                </td>
+                <td>
+                  <input type="radio" name="trust" value="Bardzo ważne" />
+                </td>
+              </tr>
+
+              <tr>
+                <td>Zdolność do nawiązywania kontaktów</td>
+                <td>
+                  <input type="radio" name="contacts" value="Ważne" required />
+                </td>
+                <td>
+                  <input type="radio" name="contacts" value="Bardzo ważne" />
+                </td>
+              </tr>
+
+              <tr>
+                <td>Punktualność</td>
+                <td>
+                  <input
+                    type="radio"
+                    name="punctuality"
+                    value="Ważne"
+                    required
+                  />
+                </td>
+                <td>
+                  <input type="radio" name="punctuality" value="Bardzo ważne" />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>6. Imię i nazwisko <span class="required">*</span></h2>
+          <input
+            type="text"
+            id="fullname"
+            required
+            placeholder="Wpisz imię i nazwisko"
+          />
+        </div>
+
+        <div class="section">
+          <h2>7. Numer telefonu <span class="required">*</span></h2>
+          <input
+            type="tel"
+            id="phone"
+            required
+            placeholder="Wpisz numer telefonu"
+          />
+        </div>
+
+        <div class="section">
+          <h2>8. Adres e-mail <span class="required">*</span></h2>
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="Wpisz adres e-mail"
+          />
+        </div>
+
+        <button type="submit" class="btn">Wyślij ankietę</button>
+
+        <div id="status" class="status"></div>
+
+        <div class="footer">© Kariera — Formularz Rekrutacyjny</div>
+      </form>
+    </div>
+
+    <script>
+      emailjs.init("OYiBfQ7AdLarDYc6U");
+
+      const checkboxes = document.querySelectorAll('input[name="important"]');
+
+      checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const checked = document.querySelectorAll(
+            'input[name="important"]:checked',
+          );
+
+          if (checked.length < 1 || checked.length > 3) {
+            alert("Wybierz od 1 do 3 odpowiedzi.");
+            return;
+          }
+        });
+      });
+
+      const form = document.getElementById("recruitmentForm");
+      const statusDiv = document.getElementById("status");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const checked = document.querySelectorAll(
+          'input[name="important"]:checked',
+        );
+
+        if (checked.length === 0) {
+          alert("Wybierz przynajmniej jedną odpowiedź.");
+          return;
+        }
+
+        const advantages = `
+Gotowość do pracy w zespole: ${document.querySelector('input[name="team"]:checked').value}
+Pilność i pracowitość: ${document.querySelector('input[name="work"]:checked').value}
+Entuzjazm: ${document.querySelector('input[name="enthusiasm"]:checked').value}
+Wiara we własne siły: ${document.querySelector('input[name="confidence"]:checked').value}
+Pozytywne myślenie: ${document.querySelector('input[name="positive"]:checked').value}
+Wiarygodność: ${document.querySelector('input[name="trust"]:checked').value}
+Kontakty: ${document.querySelector('input[name="contacts"]:checked').value}
+Punktualność: ${document.querySelector('input[name="punctuality"]:checked').value}
+ `;
+
+        const templateParams = {
+          fullname: document.getElementById("fullname").value,
+          phone: document.getElementById("phone").value,
+          email: document.getElementById("email").value,
+          idealWork: document.getElementById("idealWork").value,
+          income: document.getElementById("income").value + " zł",
+          finance: document.querySelector('input[name="finance"]:checked')
+            .value,
+          important: [...checked].map((x) => x.value).join(", "),
+          advantages: advantages,
+        };
+
+        statusDiv.innerHTML = "Wysyłanie formularza...";
+
+        try {
+          await emailjs.send(
+            "service_mksx71m",
+            "template_he9snio",
+            templateParams,
+            "OYiBfQ7AdLarDYc6U",
+          );
+
+          statusDiv.className = "status success";
+          statusDiv.innerHTML = "✔ Formularz został wysłany poprawnie";
+
+          form.reset();
+        } catch (error) {
+          statusDiv.className = "status error";
+          statusDiv.innerHTML = "✖ Błąd wysyłania formularza";
+          console.log(error.text);
+          console.log(error);
+        }
+      });
+    </script>
+  </body>
+</html>
