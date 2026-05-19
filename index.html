@@ -537,14 +537,16 @@
       const checkboxes = document.querySelectorAll('input[name="important"]');
 
       checkboxes.forEach((checkbox) => {
-        checkbox.addEventListener("change", () => {
+        checkbox.addEventListener("change", (e) => {
           const checked = document.querySelectorAll(
             'input[name="important"]:checked',
           );
 
-          if (checked.length < 1 || checked.length > 3) {
-            alert("Wybierz od 1 do 3 odpowiedzi.");
-            return;
+          if (checked.length > 3) {
+            alert("Możesz wybrać maksymalnie 3 odpowiedzi.");
+
+            // odznacza ostatnio kliknięty checkbox
+            e.target.checked = false;
           }
         });
       });
